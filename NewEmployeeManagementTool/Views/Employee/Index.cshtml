@@ -1,0 +1,106 @@
+﻿@model IEnumerable<NewEmployeeManagementTool.Models.EmployeeViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    var pageNumber = 1;
+    if (ViewBag.pageNum != null)
+    {
+        pageNumber = ViewBag.pageNum;
+    }
+}
+<style>
+    .table > :not(caption) > * > * {
+        padding: 0.2rem 0.2rem;
+    }
+</style>
+
+<p style="margin-bottom:5px;">
+    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-success" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.gender)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.status)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.gender)
+            </td>
+
+            <td style="color:@(item.status.ToLower()=="active"?"green":"red") ">
+                @Html.DisplayFor(modelItem => item.status)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new { id = item.id }, new { @class = "btn btn-success" })
+            </td>
+        </tr>
+    }
+</table>
+<div style="text-align:center;">
+    <button class="btn btn-success " onclick="changePrevPageNumber()">Prev</button>
+    <input type="number" style="width:70px;" oninput="changePageNumber()" id="paginationNumber" value="@pageNumber" />
+    <button class="btn btn-success" onclick="changeNextPageNumber()">Next</button>
+    <span style="margin-left:10px;" id="loaderBtn"></span>
+</div>
+<script>
+    function changePrevPageNumber() {
+        var pageNum = $("#paginationNumber").val();
+        if ((pageNum.length > 0) && (parseInt(pageNum) >1) && (parseInt(pageNum) != undefined)) {
+            pageNum = parseInt(pageNum) - 1;
+            $("#paginationNumber").val(pageNum);
+            $("#loaderBtn").addClass("fa fa-spinner fa-spin");
+            redirectToPage(pageNum);
+        }
+
+    }
+    function changeNextPageNumber() {
+        var pageNum = $("#paginationNumber").val();
+        if ((pageNum.length > 0) && (parseInt(pageNum) != 0) && (parseInt(pageNum) != undefined)) {
+            pageNum = parseInt(pageNum) +1;
+            $("#paginationNumber").val(pageNum);
+            $("#loaderBtn").addClass("fa fa-spinner fa-spin");
+            redirectToPage(pageNum);
+        }
+    }
+     function changePageNumber() {
+         var pageNum = $("#paginationNumber").val();
+         if ((pageNum.length > 0) && (parseInt(pageNum) != 0) && (parseInt(pageNum) != undefined)) {
+             $("#loaderBtn").addClass("fa fa-spinner fa-spin");
+
+             redirectToPage(pageNum);
+         }
+    }
+    function redirectToPage(id) {
+        setTimeout(function () {
+             window.location.href = '@Url.Action("pageAction", "Employee")/'+id;
+
+        },5)
+    }
+
+</script>
