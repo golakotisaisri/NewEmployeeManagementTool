@@ -12,23 +12,21 @@ namespace NewEmployeeManagemnetAppLib.Models
 {
     public class EmployeeRepository : IEmployeeRespository
     {
+        public static string ServiceUrl = "https://gorest.co.in/public-api/users";
 
+        //Get all employee list
         public ResponseData GetAllEmployeeList(int pageNumber)
         {
-            string url = "https://gorest.co.in/public-api/users";
+            ResponseData responseData = new ResponseData();
+            var client =new HttpClient();
             if (pageNumber == 0)
             {
                 pageNumber = 1;
             }
             string urlParameters = $"?page={pageNumber}";
-            var client = new HttpClient();
-            ResponseData responseData = new ResponseData();
             try
             {
-                client.BaseAddress = new Uri(url);
-                // Add an Accept header for JSON format.
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "fa114107311259f5f33e70a5d85de34a2499b4401da069af0b1d835cd5ec0d56");
+                client = GetHttpClientObj();
 
                 // Get data response
                 var response = client.GetAsync(urlParameters).Result;
@@ -51,18 +49,16 @@ namespace NewEmployeeManagemnetAppLib.Models
             return responseData;
         }
 
+        //Get employee details by employee id
         public ResponseData GetEmployeeDetails(int employeeId)
         {
-            string url = "https://gorest.co.in/public-api/users";
+            ResponseData responseData = new ResponseData();
             string urlParameters = $"?id={employeeId}";
             var client = new HttpClient();
-            ResponseData responseData = new ResponseData();
             try
             {
-                client.BaseAddress = new Uri(url);
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "fa114107311259f5f33e70a5d85de34a2499b4401da069af0b1d835cd5ec0d56");
-
+                // Getting client object
+                client = GetHttpClientObj();
 
                 // Get data response
                 var response = client.GetAsync(urlParameters).Result;
@@ -85,113 +81,77 @@ namespace NewEmployeeManagemnetAppLib.Models
             return responseData;
         }
 
+        //Insert new employee
         public async Task<SingleDataResponse> InsertEmployee(EmployeeData employeeData)
         {
-            //Insert Employee
-            string url = "https://gorest.co.in/public-api/users";
+            //Insert new employee
             SingleDataResponse singleDataResponse = new SingleDataResponse();
+            var client = new HttpClient();
             try
             {
-                // Posting.  
-                using (var client = new HttpClient())
+                // Getting client object
+                client = GetHttpClientObj();
+
+                // Initialization.
+                HttpResponseMessage response = new HttpResponseMessage();
+
+                // Http Post  
+                response = await client.PostAsJsonAsync(ServiceUrl, employeeData).ConfigureAwait(false);
+
+                // Verification  
+                if (response.IsSuccessStatusCode)
                 {
-                    // Setting Base address.  
-                    client.BaseAddress = new Uri(url);
+                    // Reading Response.  
+                    string empResponse = response.Content.ReadAsStringAsync().Result;
+                    dynamic dynamicResponse = JsonConvert.DeserializeObject<dynamic>(empResponse);
+                    int code = Convert.ToInt16(dynamicResponse.code);
 
-                    // Setting content type.                   
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "fa114107311259f5f33e70a5d85de34a2499b4401da069af0b1d835cd5ec0d56");
-
-                    // Initialization.
-                    HttpResponseMessage response = new HttpResponseMessage();
-
-                    // HTTP POST  
-                    response = await client.PostAsJsonAsync(url, employeeData).ConfigureAwait(false);
-
-                    // Verification  
-                    if (response.IsSuccessStatusCode)
+                    //Converting reponse object based on error code 
+                    if (code == 422)
                     {
-                        // Reading Response.  
-                        string empResponse = response.Content.ReadAsStringAsync().Result;
-                        dynamic dynamicResponse = JsonConvert.DeserializeObject<dynamic>(empResponse);
-                        int code = Convert.ToInt16(dynamicResponse.code);
-                        if (code == 422)
+                        ResponseData_Handler responseData_Handler = JsonConvert.DeserializeObject<ResponseData_Handler>(empResponse);
+                        singleDataResponse.code = "422";
+                        if (responseData_Handler != null && responseData_Handler.data != null)
                         {
-                          ResponseData_Handler  responseData_Handler = JsonConvert.DeserializeObject<ResponseData_Handler>(empResponse);
-                            singleDataResponse.code ="422";
-                            if (responseData_Handler != null && responseData_Handler.data!=null)
+                            foreach (var item in responseData_Handler.data)
                             {
-                                
-                                foreach(var item in responseData_Handler.data)
-                                {
-                                    singleDataResponse.data = new EmployeeData();
-                                    singleDataResponse.data.email=employeeData.email;
-                                    singleDataResponse.message=item.message;
-                                }
+                                singleDataResponse.data = new EmployeeData();
+                                singleDataResponse.data.email = employeeData.email;
+                                singleDataResponse.message = item.message;
                             }
-                            
                         }
-                        else
-                        {
-                            singleDataResponse = JsonConvert.DeserializeObject<SingleDataResponse>(empResponse);
-
-                        }
+                    }
+                    else
+                    {
+                        singleDataResponse = JsonConvert.DeserializeObject<SingleDataResponse>(empResponse);
                     }
                 }
             }
             catch (Exception ex)
             {
 
-                Console.WriteLine("Exception at InsertEmployee", ex.Message);
+                Console.WriteLine("Exception at InsertEmployee()", ex.Message);
             }
             return singleDataResponse;
         }
 
-        //public async Task<SingleDataResponse> UpdateEmployee(EmployeeData employeeData)
-        //{
-        //    //Update Employee
-        //    //Insert Employee
-        //    string url = $"https://gorest.co.in/public-api/users/{employeeData.id}";
-        //    SingleDataResponse singleDataResponse = new SingleDataResponse();
-        //    try
-        //    {
-        //        // Posting.  
-        //        using (var client = new HttpClient())
-        //        {
-        //            // Setting Base address.  
-        //            client.BaseAddress = new Uri(url);
-
-        //            // Setting content type.                   
-        //            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        //            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "fa114107311259f5f33e70a5d85de34a2499b4401da069af0b1d835cd5ec0d56");
-
-        //            // Initialization.
-        //            HttpResponseMessage response = new HttpResponseMessage();
-
-        //            // HTTP POST  
-        //            response = await client.PostAsJsonAsync(url, employeeData).ConfigureAwait(false);
-
-        //            // Verification  
-        //            if (response.IsSuccessStatusCode)
-        //            {
-        //                // Reading Response.  
-        //                string empResponse = response.Content.ReadAsStringAsync().Result;
-        //                singleDataResponse = JsonConvert.DeserializeObject<SingleDataResponse>(empResponse);
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        Console.WriteLine("Exception at InsertEmployee", ex.Message);
-        //    }
-        //    return singleDataResponse;
-        //}
-
-        //public void DeleteEmployee(int employeeId)
-        //{
-        //    //Delete Employee
-        //}
-
+        //Create generic http client object
+        public HttpClient GetHttpClientObj()
+        {
+            var client = new HttpClient();
+            try
+            {
+                // Setting Base address.
+                client.BaseAddress = new Uri(ServiceUrl);
+                // Add an Accept header for JSON format.
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "fa114107311259f5f33e70a5d85de34a2499b4401da069af0b1d835cd5ec0d56");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Excepton at  GetHttpClientObj: {ex.Message},{ex.StackTrace}");
+            }
+            return client;
+        }
     }
 }

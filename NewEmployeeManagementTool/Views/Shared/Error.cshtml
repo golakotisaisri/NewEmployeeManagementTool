@@ -12,6 +12,11 @@
             <h5 style="color:red;">@ViewBag.ErrorMessage</h5>
 
         }
+        else if (ViewBag.id != null)
+        {
+            <h6>Id: @ViewBag.id</h6>
+            <h5 style="color:red;">@ViewBag.ErrorMessage</h5>
+        }
         else
         {
             <hgroup>

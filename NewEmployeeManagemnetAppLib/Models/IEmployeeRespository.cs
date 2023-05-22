@@ -17,9 +17,5 @@ namespace NewEmployeeManagemnetAppLib.Models
         ResponseData GetAllEmployeeList(int pageNumber);
         ResponseData GetEmployeeDetails(int employeeId);
         Task<SingleDataResponse> InsertEmployee(EmployeeData employee);
-        
-        //Task<SingleDataResponse> UpdateEmployee(EmployeeData employee);
-        
-        // void DeleteEmployee(int EmployeeId);
     }
 }

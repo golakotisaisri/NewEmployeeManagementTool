@@ -63,7 +63,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Models\EmployeeData.cs" />
     <Compile Include="Models\EmployeeRespository.cs" />
     <Compile Include="Models\IEmployeeRespository.cs" />
