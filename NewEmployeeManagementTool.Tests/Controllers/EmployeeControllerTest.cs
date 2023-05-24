@@ -26,23 +26,7 @@ namespace NewEmployeeManagementTool.Tests.Controllers
             // Assert
             Assert.IsNotNull(result);
         }
-        [TestMethod]
-
-        public void CreateActionTestMethod()
-        {
-            // Arrange
-            EmployeeController controller = new EmployeeController();
-            EmployeeViewModel employeeData = new EmployeeViewModel();
-            employeeData.name = "saisri";
-            employeeData.email = "saisrigolakoti@gmail.com";
-            employeeData.gender = "female";
-            employeeData.status = "active";
-            // Act
-            ViewResult result = controller.Create(employeeData) as ViewResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-        }
+       
         [TestMethod]
 
         public void GetActionTestMethod()

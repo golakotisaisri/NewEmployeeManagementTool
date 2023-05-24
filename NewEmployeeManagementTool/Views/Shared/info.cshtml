@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "info";
+}
+
+@{
+    if (ViewBag.Email != null && ViewBag.InfoMessage != null)
+    {
+
+        <h6>Email: @ViewBag.Email</h6>
+        <h5 style="color:red;">@ViewBag.InfoMessage</h5>
+        @Html.ActionLink("Back to List", "Index")
+
+    }
+}
+
