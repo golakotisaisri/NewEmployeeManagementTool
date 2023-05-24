@@ -57,7 +57,6 @@
                 @Html.DisplayFor(modelItem => item.status)
             </td>
             <td>
-                @Html.ActionLink("Details", "Details", new { id = item.id }, new { @class = "btn btn-success" })
                 @Html.ActionLink("Update", "Edit", new { id = item.id }, new { @class = "btn btn-primary" })
 
                 @Html.ActionLink("Delete", "Delete", new { id = item.id }, new { @class = "btn btn-danger" })

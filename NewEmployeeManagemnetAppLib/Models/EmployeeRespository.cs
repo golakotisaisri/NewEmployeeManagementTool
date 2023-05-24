@@ -13,7 +13,7 @@ namespace NewEmployeeManagemnetAppLib.Models
 {
     public class EmployeeRepository : IEmployeeRespository
     {
-        public static string ServiceUrl = "https://gorest.co.in/public-api/users/";
+        private static string ServiceUrl = "https://gorest.co.in/public-api/users/";
 
         //Get all employee list
         public ResponseData GetAllEmployeeList(int pageNumber)
