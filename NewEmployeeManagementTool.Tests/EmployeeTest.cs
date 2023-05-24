@@ -47,5 +47,19 @@ namespace NewEmployeeManagementTool.Tests
             ResponseData responseData = employeeRepository.GetEmployeeDetails(2008037);
             Assert.IsNotNull(responseData.code);
         }
+        [TestMethod]
+        public void UpdateEmployeeTestMethod()
+        {
+            EmployeeRepository employeeRepository = new EmployeeRepository();
+            EmployeeData employeeData = new EmployeeData();
+            employeeData.id = 2083005;
+            employeeData.name = "saisri";
+            employeeData.email = "saisri7890@gmail.com";
+            employeeData.gender = "female";
+            employeeData.status = "active";
+            SingleDataResponse responseData = employeeRepository.UpdateEmployee(employeeData).Result;
+            Assert.IsTrue(responseData.code == "200");
+        }
+
     }
 }
