@@ -52,9 +52,9 @@ namespace NewEmployeeManagementTool.Tests
         {
             EmployeeRepository employeeRepository = new EmployeeRepository();
             EmployeeData employeeData = new EmployeeData();
-            employeeData.id = 2083005;
+            employeeData.id = 2078555;
             employeeData.name = "saisri";
-            employeeData.email = "saisri7890@gmail.com";
+            employeeData.email = "saisrigo777@gmail.com";
             employeeData.gender = "female";
             employeeData.status = "active";
             SingleDataResponse responseData = employeeRepository.UpdateEmployee(employeeData).Result;
